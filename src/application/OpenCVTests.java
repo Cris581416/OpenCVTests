@@ -15,10 +15,6 @@ import org.opencv.core.*;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
-import javafx.embed.swing.SwingFXUtils;
-import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
-
 import utilities.Pic;
 
 public class OpenCVTests {

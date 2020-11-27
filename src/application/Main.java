@@ -7,13 +7,10 @@ import org.opencv.core.Core;
 import javafx.application.Application;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.stage.Stage;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.fxml.FXMLLoader;
 
 
 public class Main extends Application {
