@@ -18,7 +18,7 @@ import org.opencv.imgproc.Imgproc;
 import utilities.Pic;
 
 public class OpenCVTests {
-	static Pic file = new Pic("C:/Users/cvela/Pictures/shovel2.jpg", 1920, 1202);
+	static Pic file = new Pic("C:/Users/cvela/Pictures/sample2.jpg", 1920, 1202);
 	
 	public static void main(String[] args) throws IOException {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
