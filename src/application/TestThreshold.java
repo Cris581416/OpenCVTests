@@ -16,12 +16,12 @@ import org.opencv.highgui.HighGui;
 
 public class TestThreshold {
 	static boolean exit = false;
-	static int lowH = 12;
-	static int highH = 50;
-	static int lowS = 61;
-	static int highS = 255;
-	static int lowV = 47;
-	static int highV = 255;
+	static int lowH = 0;
+	static int highH = 20;
+	static int lowS = 29;
+	static int highS = 154;
+	static int lowV = 25;
+	static int highV = 145;
     private static int RATIO = 3;
     private static int KERNEL_SIZE = 3;
     private static Size BLUR_SIZE = new Size(4,4);
@@ -38,8 +38,16 @@ public class TestThreshold {
 	public TestThreshold() {
 		extImg = new Mat();
 		
-		camera = new VideoCapture(1);
-		camera.read(extImg);
+		try {
+			camera = new VideoCapture(1);
+			if(!camera.read(extImg)) {
+				throw new Exception("No external webcam detected, using integrated cam!");
+			}
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+			camera = new VideoCapture(0);
+			camera.read(extImg);
+		}
 		
 		rng = new Random(12345);
 		
