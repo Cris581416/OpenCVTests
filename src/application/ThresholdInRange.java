@@ -25,12 +25,18 @@ public class ThresholdInRange {
     private static int MAX_VALUE = 255;
     private static int MAX_VALUE_H = 360/2;
     private static final String WINDOW_NAME = "Thresholding Operations using inRange demo";
-    private static final String LOW_H_NAME = "Low H";
-    private static final String LOW_S_NAME = "Low S";
-    private static final String LOW_V_NAME = "Low V";
-    private static final String HIGH_H_NAME = "High H";
-    private static final String HIGH_S_NAME = "High S";
-    private static final String HIGH_V_NAME = "High V";
+    private static final String LOW_H_NAME = "Low H:";
+    private static final String LOW_S_NAME = "Low S: ";
+    private static final String LOW_V_NAME = "Low V: ";
+    private static final String HIGH_H_NAME = "High H: ";
+    private static final String HIGH_S_NAME = "High S: ";
+    private static final String HIGH_V_NAME = "High V: ";
+    private JLabel lowH = new JLabel(LOW_H_NAME);
+    private JLabel highH = new JLabel(HIGH_H_NAME);
+    private JLabel lowS = new JLabel(LOW_S_NAME);
+    private JLabel highS = new JLabel(HIGH_S_NAME);
+    private JLabel lowV = new JLabel(LOW_V_NAME);
+    private JLabel highV = new JLabel(HIGH_V_NAME);
     private JSlider sliderLowH;
     private JSlider sliderHighH;
     private JSlider sliderLowS;
@@ -44,7 +50,7 @@ public class ThresholdInRange {
     private JLabel imgDetectionLabel;
     private CaptureTask captureTask;
     public ThresholdInRange(String[] args) {
-        int cameraDevice = 0;
+        int cameraDevice = 1;
         if (args.length > 0) {
             cameraDevice = Integer.parseInt(args[0]);
         }
@@ -107,42 +113,42 @@ public class ThresholdInRange {
         }
         JPanel sliderPanel = new JPanel();
         sliderPanel.setLayout(new BoxLayout(sliderPanel, BoxLayout.PAGE_AXIS));
-        sliderPanel.add(new JLabel(LOW_H_NAME));
+        sliderPanel.add(lowH);
         sliderLowH = new JSlider(0, MAX_VALUE_H, 0);
         sliderLowH.setMajorTickSpacing(50);
         sliderLowH.setMinorTickSpacing(10);
         sliderLowH.setPaintTicks(true);
         sliderLowH.setPaintLabels(true);
         sliderPanel.add(sliderLowH);
-        sliderPanel.add(new JLabel(HIGH_H_NAME));
+        sliderPanel.add(highH);
         sliderHighH = new JSlider(0, MAX_VALUE_H, MAX_VALUE_H);
         sliderHighH.setMajorTickSpacing(50);
         sliderHighH.setMinorTickSpacing(10);
         sliderHighH.setPaintTicks(true);
         sliderHighH.setPaintLabels(true);
         sliderPanel.add(sliderHighH);
-        sliderPanel.add(new JLabel(LOW_S_NAME));
+        sliderPanel.add(lowS);
         sliderLowS = new JSlider(0, MAX_VALUE, 0);
         sliderLowS.setMajorTickSpacing(50);
         sliderLowS.setMinorTickSpacing(10);
         sliderLowS.setPaintTicks(true);
         sliderLowS.setPaintLabels(true);
         sliderPanel.add(sliderLowS);
-        sliderPanel.add(new JLabel(HIGH_S_NAME));
+        sliderPanel.add(highS);
         sliderHighS = new JSlider(0, MAX_VALUE, MAX_VALUE);
         sliderHighS.setMajorTickSpacing(50);
         sliderHighS.setMinorTickSpacing(10);
         sliderHighS.setPaintTicks(true);
         sliderHighS.setPaintLabels(true);
         sliderPanel.add(sliderHighS);
-        sliderPanel.add(new JLabel(LOW_V_NAME));
+        sliderPanel.add(lowV);
         sliderLowV = new JSlider(0, MAX_VALUE, 0);
         sliderLowV.setMajorTickSpacing(50);
         sliderLowV.setMinorTickSpacing(10);
         sliderLowV.setPaintTicks(true);
         sliderLowV.setPaintLabels(true);
         sliderPanel.add(sliderLowV);
-        sliderPanel.add(new JLabel(HIGH_V_NAME));
+        sliderPanel.add(highV);
         sliderHighV = new JSlider(0, MAX_VALUE, MAX_VALUE);
         sliderHighV.setMajorTickSpacing(50);
         sliderHighV.setMinorTickSpacing(10);
@@ -155,6 +161,7 @@ public class ThresholdInRange {
                 JSlider source = (JSlider) e.getSource();
                 int valH = Math.min(sliderHighH.getValue()-1, source.getValue());
                 sliderLowH.setValue(valH);
+                lowH.setText(LOW_H_NAME + valH);
             }
         });
         sliderHighH.addChangeListener(new ChangeListener() {
@@ -163,6 +170,7 @@ public class ThresholdInRange {
                 JSlider source = (JSlider) e.getSource();
                 int valH = Math.max(source.getValue(), sliderLowH.getValue()+1);
                 sliderHighH.setValue(valH);
+                highH.setText(HIGH_H_NAME + valH);
             }
         });
         sliderLowS.addChangeListener(new ChangeListener() {
@@ -171,6 +179,7 @@ public class ThresholdInRange {
                 JSlider source = (JSlider) e.getSource();
                 int valS = Math.min(sliderHighS.getValue()-1, source.getValue());
                 sliderLowS.setValue(valS);
+                lowS.setText(LOW_S_NAME + valS);
             }
         });
         sliderHighS.addChangeListener(new ChangeListener() {
@@ -179,6 +188,7 @@ public class ThresholdInRange {
                 JSlider source = (JSlider) e.getSource();
                 int valS = Math.max(source.getValue(), sliderLowS.getValue()+1);
                 sliderHighS.setValue(valS);
+                highS.setText(HIGH_S_NAME + valS);
             }
         });
         sliderLowV.addChangeListener(new ChangeListener() {
@@ -187,6 +197,7 @@ public class ThresholdInRange {
                 JSlider source = (JSlider) e.getSource();
                 int valV = Math.min(sliderHighV.getValue()-1, source.getValue());
                 sliderLowV.setValue(valV);
+                lowV.setText(LOW_V_NAME + valV);
             }
         });
         sliderHighV.addChangeListener(new ChangeListener() {
@@ -195,6 +206,7 @@ public class ThresholdInRange {
                 JSlider source = (JSlider) e.getSource();
                 int valV = Math.max(source.getValue(), sliderLowV.getValue()+1);
                 sliderHighV.setValue(valV);
+                highV.setText(HIGH_V_NAME + valV);
             }
         });
         pane.add(sliderPanel, BorderLayout.PAGE_START);

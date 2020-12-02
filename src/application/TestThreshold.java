@@ -3,7 +3,9 @@ package application;
 import java.awt.BorderLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import javax.swing.*;
 
@@ -14,24 +16,32 @@ import org.opencv.highgui.HighGui;
 
 public class TestThreshold {
 	static boolean exit = false;
-	static int lowH = 60;
-	static int highH = 255 / 2;
-	static int lowS = 0;
+	static int lowH = 12;
+	static int highH = 50;
+	static int lowS = 61;
 	static int highS = 255;
-	static int lowV = 0;
+	static int lowV = 47;
 	static int highV = 255;
+    private static int RATIO = 3;
+    private static int KERNEL_SIZE = 3;
+    private static Size BLUR_SIZE = new Size(4,4);
+    private static int lowThresh = 0;
+    static double minSize = 100 * 200;
 	static VideoCapture camera;
 	static Processor processor;
 	static JFrame frame;
 	static Mat extImg;
 	static JLabel processedLabel;
 	static JLabel originalLabel;
+	static Random rng;
 	
 	public TestThreshold() {
 		extImg = new Mat();
 		
-		camera = new VideoCapture(0);
+		camera = new VideoCapture(1);
 		camera.read(extImg);
+		
+		rng = new Random(12345);
 		
 		frame = new JFrame("TestThreshold");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -81,12 +91,42 @@ public class TestThreshold {
 	
 	public static Mat threshold(Mat img) {
 		Mat hsvImg = new Mat();
-		Mat processedImg = new Mat();
+		Mat blurredImg = new Mat();
+		Mat thresholdedImg = new Mat();
+		Mat detectedEdges = new Mat();
+		Mat processedImg;
 		
 		Imgproc.cvtColor(img, hsvImg, Imgproc.COLOR_BGR2HSV);
-		Core.inRange(hsvImg, new Scalar(lowH, lowS, lowV), new Scalar(highH, highS, highV), processedImg);
+		Imgproc.blur(hsvImg, blurredImg, BLUR_SIZE);
+		Core.inRange(hsvImg, new Scalar(lowH, lowS, lowV), new Scalar(highH, highS, highV), thresholdedImg);
+		Imgproc.Canny(thresholdedImg, detectedEdges, lowThresh, lowThresh * RATIO, KERNEL_SIZE, false);
+        processedImg = new Mat(hsvImg.size(), CvType.CV_8UC3, Scalar.all(0));
+        thresholdedImg.copyTo(processedImg, detectedEdges);
+        
+        List<MatOfPoint> contours = new ArrayList<>();
+        Mat hierarchy = new Mat();
+        Imgproc.findContours(thresholdedImg, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_NONE);
+        MatOfPoint2f[] contoursPoly  = new MatOfPoint2f[contours.size()];
+        Rect[] boundRect = new Rect[contours.size()];
+        for (int i = 0; i < contours.size(); i++) {
+            contoursPoly[i] = new MatOfPoint2f();
+            Imgproc.approxPolyDP(new MatOfPoint2f(contours.get(i).toArray()), contoursPoly[i], 3, true);
+            boundRect[i] = Imgproc.boundingRect(new MatOfPoint(contoursPoly[i].toArray()));
+        }
+        Mat drawing = Mat.zeros(thresholdedImg.size(), CvType.CV_8UC3);
+        List<MatOfPoint> contoursPolyList = new ArrayList<>(contoursPoly.length);
+        for (MatOfPoint2f poly : contoursPoly) {
+            contoursPolyList.add(new MatOfPoint(poly.toArray()));
+        }
+        for (int i = 0; i < contours.size(); i++) {
+            Scalar color = new Scalar(rng.nextInt(256), rng.nextInt(256), rng.nextInt(256));
+            if(boundRect[i].area() > minSize) {
+            	Imgproc.drawContours(drawing, contoursPolyList, i, color);
+            	Imgproc.rectangle(drawing, boundRect[i].tl(), boundRect[i].br(), color, 2);
+            }
+        }
 		
-		return processedImg;
+		return drawing;
 	}
 	
 	public static void main(String[] args) {
