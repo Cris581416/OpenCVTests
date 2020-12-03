@@ -50,19 +50,19 @@ public class ThresholdInRange {
     private JLabel imgDetectionLabel;
     private CaptureTask captureTask;
     public ThresholdInRange(String[] args) {
-        int cameraDevice = 1;
-        if (args.length > 0) {
-            cameraDevice = Integer.parseInt(args[0]);
-        }
-        cap = new VideoCapture(cameraDevice);
-        if (!cap.isOpened()) {
-            System.err.println("Cannot open camera: " + cameraDevice);
-            System.exit(0);
-        }
-        if (!cap.read(matFrame)) {
-            System.err.println("Cannot read camera stream.");
-            System.exit(0);
-        }
+    	matFrame = new Mat();
+		
+		try {
+			cap = new VideoCapture(1);
+			if(!cap.read(matFrame)) {
+				throw new Exception("No external webcam detected, using integrated cam!");
+			}
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+			cap = new VideoCapture(0);
+			cap.read(matFrame);
+		}
+    	
         // Create and set up the window.
         frame = new JFrame(WINDOW_NAME);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

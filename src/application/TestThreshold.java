@@ -22,11 +22,12 @@ public class TestThreshold {
 	static int highS = 154;
 	static int lowV = 25;
 	static int highV = 145;
-    private static int RATIO = 3;
-    private static int KERNEL_SIZE = 3;
-    private static Size BLUR_SIZE = new Size(4,4);
-    private static int lowThresh = 0;
+    static int RATIO = 3;
+    static int KERNEL_SIZE = 3;
+    static Size BLUR_SIZE = new Size(4,4);
+    static int lowThresh = 0;
     static double minSize = 100 * 200;
+    static int centerSize = 4;
 	static VideoCapture camera;
 	static Processor processor;
 	static JFrame frame;
@@ -131,6 +132,9 @@ public class TestThreshold {
             if(boundRect[i].area() > minSize) {
             	Imgproc.drawContours(drawing, contoursPolyList, i, color);
             	Imgproc.rectangle(drawing, boundRect[i].tl(), boundRect[i].br(), color, 2);
+            	Point center = new Point((boundRect[i].tl().x + boundRect[i].br().x) / 2, (boundRect[i].tl().y + boundRect[i].br().y) / 2);
+            	Imgproc.rectangle(drawing, new Point(center.x - centerSize, center.y - centerSize), 
+            					new Point(center.x + centerSize, center.y + centerSize), new Scalar(255, 255, 255), Imgproc.FILLED);
             }
         }
 		
